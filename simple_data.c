@@ -99,6 +99,12 @@ int main()
     // Request connection
     BLECON_ERROR_CHECK(blecon_modem_request_connection(&blecon_modem));
 
+    // Start sending data every three seconds
+    bool timer_added = add_repeating_timer_ms(3000, data_timer_callback, NULL, &data_timer);
+    if (timer_added == false) {
+        printf("ERROR: Could not add data timer!\n");
+    }
+
     while (true) {
         // Wait for semaphore
         sem_acquire_blocking(&blecon_event_sem);
@@ -118,12 +124,6 @@ void blecon_modem_on_connection(struct blecon_modem_t* modem, void* user_data)
 
     // Send request
     BLECON_ERROR_CHECK(blecon_modem_send_request(&blecon_modem, (const uint8_t*)blecon_buffer, strlen(blecon_buffer)));
-
-    // Start sending data every three seconds
-    bool timer_added = add_repeating_timer_ms(3000, data_timer_callback, NULL, &data_timer);
-    if (timer_added == false) {
-        printf("ERROR: Could not add data timer!\n");
-    }
 }
 
 void blecon_modem_on_response(struct blecon_modem_t* modem, void* user_data)
