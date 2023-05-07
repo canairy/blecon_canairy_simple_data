@@ -65,6 +65,7 @@ int send_msg(void)
 
 bool data_timer_callback(repeating_timer_t* p_rt)
 {
+    msg_count++;
     send_msg();
 }
 
